@@ -1,32 +1,26 @@
-// supabaseProvider.js
-import { supabaseDataProvider } from "ra-supabase";
+import { supabaseDataProvider } from "ra-supabase-core";
+import { supabaseAuthProvider } from "ra-supabase-core";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://xcbrsmkvivzklrzhyhpn.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhjYnJzbWt2aXZ6a2xyemh5aHBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDYwNTQwNjYsImV4cCI6MjAyMTYzMDA2Nn0.xaToS7jUyXxfCOcyn5ZZaW-4bZgt8HIZKkqk2fdpqi4";
-console.log("creating supaclient");
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_API_KEY;
+
+console.log("this is the proc env: %s", supabaseUrl);
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const authProvider = {
-  login: ({ username, password }) =>
-    supabase.auth.signIn({ email: username, password }),
-  logout: () => supabase.auth.signOut(),
-  checkError: ({ status }) => {
-    if (status === 401 || status === 403) {
-      return Promise.reject();
-    }
-    return Promise.resolve();
+const authProvider = supabaseAuthProvider(supabase, {
+  getIdentity: async (user) => {
+    return {
+      id: user.id,
+      fullName: user.email,
+    };
   },
-  checkAuth: () => {
-    console.log("check auth");
-    return supabase.auth.session() ? Promise.resolve() : Promise.reject();
-  },
-  getPermissions: () => Promise.resolve(),
-};
+});
 
-console.log("creating supabaseDataProvider");
+const dataProvider = supabaseDataProvider({
+  instanceUrl: supabaseUrl,
+  apiKey: supabaseKey,
+  supabaseClient: supabase,
+});
 
-const supabaseDataProviderI = supabaseDataProvider(supabase, authProvider);
-
-export default supabaseDataProviderI;
+export { dataProvider, authProvider };

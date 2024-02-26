@@ -6,20 +6,22 @@ import {
   DateField,
   EditButton,
   DeleteButton,
-  reactAdminFetchActions,
 } from "react-admin";
 
-const HuespedList = (props) => {
+const PersonalList = (props) => {
   return (
     <List {...props}>
       <Datagrid>
         <TextField source="id" />
         <TextField source="nombre" />
-        <EditButton />
-        <DeleteButton />
+        <TextField source="apellido" />
+        <TextField source="dni" />
+        <DateField source="fechaIngreso" />
+        <EditButton label="Editar" />
+        <DeleteButton label="Eliminar"/>
       </Datagrid>
     </List>
   );
 };
 
-export default HuespedList;
+export default PersonalList;

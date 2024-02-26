@@ -2,6 +2,7 @@
   "name": "solDeClient",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://siacobelli.github.io/SolDeMendiolaza",
   "dependencies": {
     "@mui/material": "^5.15.11",
     "@mui/styled-engine-sc": "^6.0.0-alpha.17",
@@ -36,5 +37,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
   }
 }

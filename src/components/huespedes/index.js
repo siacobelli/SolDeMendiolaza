@@ -24,4 +24,6 @@ const HuespedesList = (props) => {
   );
 };
 
-export default HuespedesList;
+export default {
+  list: HuespedesList,
+};

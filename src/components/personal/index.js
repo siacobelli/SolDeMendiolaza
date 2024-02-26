@@ -18,10 +18,12 @@ const PersonalList = (props) => {
         <TextField source="dni" />
         <DateField source="fechaIngreso" />
         <EditButton label="Editar" />
-        <DeleteButton label="Eliminar"/>
+        <DeleteButton label="Eliminar" />
       </Datagrid>
     </List>
   );
 };
 
-export default PersonalList;
+export default {
+  list: PersonalList,
+};

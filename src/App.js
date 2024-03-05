@@ -4,16 +4,19 @@ import { dataProvider, authProvider } from "./components/supabaseProvider";
 import { LoginPage, SetPasswordPage } from "ra-supabase-ui-materialui";
 import { BrowserRouter, Route } from "react-router-dom";
 
-import { PointOfSale, AssignmentInd, Hotel } from "@mui/icons-material";
+import { PointOfSale, AssignmentInd, Hotel, Paid } from "@mui/icons-material";
+
+import movimientos from "./components/movimientos";
+import convenios from "./components/convenios";
 
 import huespedes from "./components/huespedes";
 import personal from "./components/personal";
-import tiposMovimiento from "./components/tiposMovimiento";
-import movimientos from "./components/movimientos";
+
+import horasMensualesPersonal from "./components/horasMensualesPersonal";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/SolDeMendiolaza">
       <Admin
         dataProvider={dataProvider}
         authProvider={authProvider}
@@ -23,10 +26,15 @@ function App() {
           <Route path={SetPasswordPage.path} element={<SetPasswordPage />} />
         </CustomRoutes>
         <Resource name="movimientos" {...movimientos} icon={PointOfSale} />
+        <Resource name="convenios" {...convenios} icon={Paid} />
 
         <Resource name="huespedes" {...huespedes} icon={Hotel} />
         <Resource name="personal" {...personal} icon={AssignmentInd} />
-        <Resource name="tiposMovimiento" {...tiposMovimiento} />
+        <Resource
+          name="horasMensualesPersonal"
+          {...horasMensualesPersonal}
+          icon={AssignmentInd}
+        />
       </Admin>
     </BrowserRouter>
   );

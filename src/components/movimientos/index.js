@@ -18,6 +18,7 @@ import {
   AutocompleteInput,
   useRecordContext,
   required,
+  SelectInput,
 } from "react-admin";
 
 import utils from "../../utils";
@@ -70,31 +71,39 @@ const MovimientosList = (props) => {
   );
 };
 
+const filterToQuery = (search) =>
+  search
+    ? {
+        "@or": {
+          "nombre@ilike": `%${search}%`,
+          "apellido@ilike": `%${search}%`,
+        },
+      }
+    : {};
 const TipoMovimientoOptionRenderer = () => {
   const record = useRecordContext();
   return (
-    <>
+    <div style={{ display: "flex" }}>
       {record.tipo === "ingreso" ? (
         <Paid sx={{ color: utils.ragPalette.green }} />
       ) : (
         <Receipt sx={{ color: utils.ragPalette.red }} />
       )}
       <TextField source="nombre" />
-    </>
+    </div>
   );
 };
 
 const MovimientosCreate = (props) => {
   const { data } = useGetIdentity();
   const optionText = <TipoMovimientoOptionRenderer />;
-  const inputText = (choice) => `${choice.nombre}`;
 
   return (
     <Create
       {...props}
       redirect={"list"}
       actions={
-        <TopToolbar>
+        <TopToolbar title="Movimientos">
           <ListButton />
         </TopToolbar>
       }
@@ -106,15 +115,22 @@ const MovimientosCreate = (props) => {
           validate={required()}
         />
         <ReferenceInput source="tipo" reference="tiposMovimiento">
-          <AutocompleteInput
+          <SelectInput
             label="Tipo"
             optionText={optionText}
-            inputText={inputText}
             validate={required()}
           />
         </ReferenceInput>
         <NumberInput source="importe" validate={required()} />
-        <TextInput source="descripcion" />
+        <TextInput source="descripcion" multiline />
+        <ReferenceInput source="id_huesped" reference="huespedes">
+          <AutocompleteInput
+            filterToQuery={filterToQuery}
+            optionText={(huesped) =>
+              `#${huesped.id} ${huesped.nombre},${huesped.apellido}`
+            }
+          />
+        </ReferenceInput>
         <TextInput source="user" defaultValue={data?.fullName} disabled />
       </SimpleForm>
     </Create>
@@ -122,12 +138,11 @@ const MovimientosCreate = (props) => {
 };
 
 const MovimientosEdit = (props) => {
-  const optionText = <TipoMovimientoOptionRenderer />;
-  const inputText = (choice) => `${choice.nombre}`;
+  const tiposMovimientoOptionText = <TipoMovimientoOptionRenderer />;
+
   return (
     <Edit
       {...props}
-      redirect={false}
       actions={
         <TopToolbar>
           <PrevNextButtons />
@@ -140,14 +155,20 @@ const MovimientosEdit = (props) => {
         <DateTimeInput source="fechaMovimiento" validate={required()} />
         <NumberInput source="importe" validate={required()} />
         <ReferenceInput source="tipo" reference="tiposMovimiento">
-          <AutocompleteInput
-            label="Tipo"
-            optionText={optionText}
-            inputText={inputText}
+          <SelectInput
+            optionText={tiposMovimientoOptionText}
             validate={required()}
           />
         </ReferenceInput>
-        <TextInput source="descripcion" />
+        <TextInput source="descripcion" multiline />
+        <ReferenceInput source="id_huesped" reference="huespedes">
+          <AutocompleteInput
+            filterToQuery={filterToQuery}
+            optionText={(huesped) =>
+              `#${huesped.id} ${huesped.nombre},${huesped.apellido}`
+            }
+          />
+        </ReferenceInput>
         <TextInput source="user" disabled />
       </SimpleForm>
     </Edit>

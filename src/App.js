@@ -1,10 +1,8 @@
 import "./App.css";
-import { Admin, CustomRoutes, Resource } from "react-admin";
+import { Admin, Resource } from "react-admin";
 import { dataProvider, authProvider } from "./components/supabaseProvider";
-import { LoginPage, SetPasswordPage } from "ra-supabase-ui-materialui";
-import { BrowserRouter, Route } from "react-router-dom";
-
-import { PointOfSale, AssignmentInd, Hotel, Paid } from "@mui/icons-material";
+import { LoginPage } from "ra-supabase-ui-materialui";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 
 import movimientos from "./components/movimientos";
 import convenios from "./components/convenios";
@@ -13,28 +11,28 @@ import huespedes from "./components/huespedes";
 import personal from "./components/personal";
 
 import horasMensualesPersonal from "./components/horasMensualesPersonal";
+import { Home } from "./components/home";
+import { MainLayout } from "./components/layout";
 
 function App() {
   return (
     <BrowserRouter basename="/SolDeMendiolaza">
       <Admin
+        disableTelemetry
+        basename=""
         dataProvider={dataProvider}
         authProvider={authProvider}
-        loginPage={LoginPage}
+        layout={MainLayout}
+        dashboard={Home}
+        loginPage={<LoginPage disableForgotPassword={true} />}
       >
-        <CustomRoutes noLayout>
-          <Route path={SetPasswordPage.path} element={<SetPasswordPage />} />
-        </CustomRoutes>
-        <Resource name="movimientos" {...movimientos} icon={PointOfSale} />
-        <Resource name="convenios" {...convenios} icon={Paid} />
+        <Resource name="notificaciones" />
+        <Resource name="movimientos" {...movimientos} />
+        <Resource name="convenios" {...convenios} />
 
-        <Resource name="huespedes" {...huespedes} icon={Hotel} />
-        <Resource name="personal" {...personal} icon={AssignmentInd} />
-        <Resource
-          name="horasMensualesPersonal"
-          {...horasMensualesPersonal}
-          icon={AssignmentInd}
-        />
+        <Resource name="huespedes" {...huespedes} />
+        <Resource name="personal" {...personal} />
+        <Resource name="horasMensualesPersonal" {...horasMensualesPersonal} />
       </Admin>
     </BrowserRouter>
   );

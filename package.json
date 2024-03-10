@@ -1,5 +1,5 @@
 {
-  "name": "solDeClient",
+  "name": "SolDeMendiolaza",
   "version": "0.1.0",
   "private": true,
   "homepage": "https://siacobelli.github.io/SolDeMendiolaza",
@@ -21,7 +21,6 @@
     "eject": "react-scripts eject",
     "predeploy" : "npm run build",
     "deploy": "gh-pages -d build"
-
   },
   "eslintConfig": {
     "extends": [

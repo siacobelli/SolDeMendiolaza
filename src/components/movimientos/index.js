@@ -80,6 +80,7 @@ const filterToQuery = (search) =>
         },
       }
     : {};
+    
 const TipoMovimientoOptionRenderer = () => {
   const record = useRecordContext();
   return (

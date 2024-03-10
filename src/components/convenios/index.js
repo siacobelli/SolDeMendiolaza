@@ -8,9 +8,11 @@ import {
   SelectInput,
   NumberField,
   FunctionField,
+  WrapperField,
 } from "react-admin";
 
 import utils from "../../utils";
+import { Stack } from "@mui/material";
 
 const filters = [
   <ReferenceInput
@@ -28,7 +30,6 @@ const filters = [
   </ReferenceInput>,
 ];
 const rowStyle = (record, index) => {
-  console.log("r %o", record);
   const d = new Date();
   return {
     backgroundColor:
@@ -37,6 +38,28 @@ const rowStyle = (record, index) => {
         : "inherit",
   };
 };
+
+const importeRender = (importe, color, text, percentage = 1) => (
+  <div style={{ borderBottom: "2px dotted " + color, margin: "2px" }}>
+    <span
+      style={{
+        fontWeight: "bolder",
+      }}
+    >
+      {text}:
+    </span>
+    <span
+      style={{
+        display: "inline-block",
+        minWidth: "100px",
+        marginLeft: "4px",
+        textAlign: "center",
+      }}
+    >
+      ${(importe * percentage).toLocaleString()}
+    </span>
+  </div>
+);
 
 const ConveniosList = (props) => {
   return (
@@ -49,35 +72,72 @@ const ConveniosList = (props) => {
       storeKey={false}
     >
       <Datagrid bulkActionButtons={false} rowSx={rowStyle}>
-        <TextField source="nombre" />
-
+        <TextField source="nombre" sortable={false} />
         <FunctionField
+          sortable={false}
           source="desde"
           render={(record) => utils.uFormat(record.desde, "yyyy-MMMM")}
         />
-        <NumberField source="importe_diario" label="DIARIO S/IVA" />
-        <NumberField source="importe_mensual" label="MENSUAL S/IVA" />
+        <WrapperField
+          sortable={false}
+          source="importe_diario"
+          label="Importe Diario"
+          textAlign="right"
+        >
+          <Stack>
+            <FunctionField
+              render={(record) =>
+                importeRender(record.importe_diario, "#006400", "SIN IVA", 1)
+              }
+            />
 
-        <NumberField
-          source="importe_diario"
-          label="DIARIO IVA 10.5%"
-          transform={(value) => value * 1.105}
-        />
-        <NumberField
-          source="importe_diario"
-          label="DIARIO IVA 21%"
-          transform={(value) => value * 1.21}
-        />
-        <NumberField
+            <FunctionField
+              render={(record) =>
+                importeRender(
+                  record.importe_diario,
+                  "#00016459",
+                  "10.5%",
+                  1.105
+                )
+              }
+            />
+            <FunctionField
+              render={(record) =>
+                importeRender(record.importe_diario, "#f4a036", "21 %", 1.21)
+              }
+            />
+          </Stack>
+        </WrapperField>
+        <WrapperField
+          sortable={false}
           source="importe_mensual"
-          label="MENSUAL IVA 10.5%"
-          transform={(value) => value * 1.105}
-        />
-        <NumberField
-          source="importe_mensual"
-          label="MENSUAL IVA 21%"
-          transform={(value) => value * 1.21}
-        />
+          label="Importe Mensual"
+          textAlign="right"
+        >
+          <Stack>
+            <FunctionField
+              render={(record) =>
+                importeRender(record.importe_mensual, "#006400", "SIN IVA", 1)
+              }
+            />
+
+            <FunctionField
+              render={(record) =>
+                importeRender(
+                  record.importe_mensual,
+                  "#00016459",
+                  "10.5%",
+                  1.105
+                )
+              }
+            />
+            <FunctionField
+              render={(record) =>
+                importeRender(record.importe_mensual, "#f4a03682", "21 %", 1.21)
+              }
+            />
+          </Stack>
+        </WrapperField>
       </Datagrid>
     </List>
   );

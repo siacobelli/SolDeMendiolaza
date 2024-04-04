@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import {
-  List,
   Datagrid,
   TextField,
   ReferenceInput,
   required,
-  SelectInput,
-  NumberField,
   FunctionField,
   DateInput,
   BooleanField,
@@ -22,10 +19,12 @@ import {
   BooleanInput,
   EditButton,
   Edit,
+  WrapperField,
+  NumberField,
 } from "react-admin";
 
 import utils from "../../utils";
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 
 const filters = [
   <DateInput
@@ -43,6 +42,28 @@ const date = new Date();
 date.setMonth(date.getMonth() - 1);
 date.setDate(1);
 const defaultFilterDate = date.toISOString();
+
+const horasRender = (horas, color, text) => horas ? (
+  <div style={{ borderBottom: "2px dotted " + color, margin: "2px" }}>
+    <span
+      style={{
+        fontWeight: "bolder",
+      }}
+    >
+      {text}:
+    </span>
+    <span
+      style={{
+        display: "inline-block",
+        minWidth: "100px",
+        marginLeft: "4px",
+        textAlign: "center",
+      }}
+    >
+      #{(horas).toLocaleString()}
+    </span>
+  </div>
+) : "" ;
 
 const HorasMensualesPersonalList = (props) => {
   return (
@@ -72,12 +93,46 @@ const HorasMensualesPersonalList = (props) => {
           />
         </ReferenceField>
         <BooleanField source="pagado" />
-        <NumberField source="adicional" />
+        {/* 
         <NumberField source="horas_cuidado_diurno" />
         <NumberField source="horas_cuidado_nocturno" />
         <NumberField source="horas_talleres" />
         <NumberField source="horas_limpieza" />
-        <NumberField source="horas_sessiones" />
+        <NumberField source="horas_sessiones" /> */}
+        <NumberField source="adicional" />
+        <WrapperField
+          sortable={false}
+          label="Horas"
+          textAlign="left"
+        >
+          <Stack>
+            <FunctionField
+              render={(record) =>
+                horasRender(record.horas_cuidado_diurno, "inherit", "Diurnas")
+              }
+            />
+            <FunctionField
+              render={(record) =>
+                horasRender(record.horas_cuidado_nocturno, "inherit", "Nocturno")
+              }
+            />
+            <FunctionField
+              render={(record) =>
+                horasRender(record.horas_talleres, "inherit", "Talleres")
+              }
+            />
+            <FunctionField
+              render={(record) =>
+                horasRender(record.horas_limpieza, "inherit", "Limpieza")
+              }
+            />
+            <FunctionField
+              render={(record) =>
+                horasRender(record.horas_sessiones, "inherit", "Sesiones")
+              }
+            />
+          </Stack>
+        </WrapperField>
         <TextField source="notas" />
       </Datagrid>
     </InfiniteList>

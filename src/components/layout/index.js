@@ -54,7 +54,6 @@ const SidebarMenu = () => {
   const createPath = useCreatePath();
 
   const handleClick = (index, item) => {
-    console.log("item clic %o", item);
     if (item.path) {
       const pathToNavigate = item.path.resource
         ? createPath(item.path)

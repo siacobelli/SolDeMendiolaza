@@ -22,4 +22,4 @@ const dataProvider = supabaseDataProvider({
   supabaseClient: supabase,
 });
 
-export { dataProvider, authProvider };
+export { dataProvider, authProvider, supabase };

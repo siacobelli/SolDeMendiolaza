@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
+import { supabase } from "../supabaseProvider";
 import {
   Datagrid,
   TextField,
@@ -21,10 +22,23 @@ import {
   Edit,
   WrapperField,
   NumberField,
+  useRecordContext,
+  Show,
+  SimpleShowLayout,
 } from "react-admin";
 
 import utils from "../../utils";
-import { Grid, Stack } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Drawer,
+  Grid,
+  Stack,
+} from "@mui/material";
 
 const filters = [
   <DateInput
@@ -43,27 +57,30 @@ date.setMonth(date.getMonth() - 1);
 date.setDate(1);
 const defaultFilterDate = date.toISOString();
 
-const horasRender = (horas, color, text) => horas ? (
-  <div style={{ borderBottom: "2px dotted " + color, margin: "2px" }}>
-    <span
-      style={{
-        fontWeight: "bolder",
-      }}
-    >
-      {text}:
-    </span>
-    <span
-      style={{
-        display: "inline-block",
-        minWidth: "100px",
-        marginLeft: "4px",
-        textAlign: "center",
-      }}
-    >
-      #{(horas).toLocaleString()}
-    </span>
-  </div>
-) : "" ;
+const horasRender = (horas, color, text) =>
+  horas ? (
+    <div style={{ borderBottom: "2px dotted " + color, margin: "2px" }}>
+      <span
+        style={{
+          fontWeight: "bolder",
+        }}
+      >
+        {text}:
+      </span>
+      <span
+        style={{
+          display: "inline-block",
+          minWidth: "100px",
+          marginLeft: "4px",
+          textAlign: "center",
+        }}
+      >
+        #{horas.toLocaleString()}
+      </span>
+    </div>
+  ) : (
+    ""
+  );
 
 const HorasMensualesPersonalList = (props) => {
   return (
@@ -93,18 +110,8 @@ const HorasMensualesPersonalList = (props) => {
           />
         </ReferenceField>
         <BooleanField source="pagado" />
-        {/* 
-        <NumberField source="horas_cuidado_diurno" />
-        <NumberField source="horas_cuidado_nocturno" />
-        <NumberField source="horas_talleres" />
-        <NumberField source="horas_limpieza" />
-        <NumberField source="horas_sessiones" /> */}
         <NumberField source="adicional" />
-        <WrapperField
-          sortable={false}
-          label="Horas"
-          textAlign="left"
-        >
+        <WrapperField sortable={false} label="Horas" textAlign="left">
           <Stack>
             <FunctionField
               render={(record) =>
@@ -113,7 +120,11 @@ const HorasMensualesPersonalList = (props) => {
             />
             <FunctionField
               render={(record) =>
-                horasRender(record.horas_cuidado_nocturno, "inherit", "Nocturno")
+                horasRender(
+                  record.horas_cuidado_nocturno,
+                  "inherit",
+                  "Nocturno"
+                )
               }
             />
             <FunctionField
@@ -233,6 +244,60 @@ const HorasMensualesPersonalCreate = (props) => {
   );
 };
 
+const LiquidacionComponent = () => {
+  const record = useRecordContext();
+  const [liquidacion, setLiquidacion] = useState({});
+
+  const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase.rpc("getliquidacion", {
+          id_personal: record.id_personal,
+          periodo: record.periodo,
+        });
+        setLiquidacion(data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (record) fetchData();
+  }, [record, setLiquidacion]); // Empty dependency array ensures this effect runs only once on mount
+
+  /*alias
+importe_liquidacion
+detalle_horas_texto
+mensaje */
+
+  return (
+    <>
+      <Button variant="outlined" onClick={() => setOpen(true)}>
+        Ver Liquidacion
+      </Button>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle id="alert-dialog-title">
+          Liquidacion
+          {` ${liquidacion.periodo} #${liquidacion.id_personal} - ${liquidacion.nombre_personal}`}
+        </DialogTitle>
+        <DialogContent>
+          <Show actions={false}>
+            <SimpleShowLayout record={liquidacion}>
+              <NumberField Field source="importe_liquidacion" />
+              <TextField source="alias" />
+              <TextField multiline source="detalle_horas_texto" />
+              <TextField multiline source="mensaje" />
+            </SimpleShowLayout>
+          </Show>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
 const HorasMensualesPersonalEdit = (props) => {
   return (
     <Edit
@@ -310,8 +375,11 @@ const HorasMensualesPersonalEdit = (props) => {
               sx={{ minHeight: "140px", overflow: "auto", maxHeight: "140px" }}
             />
           </Grid>
-          <Grid item xs={4} sx={{ maxWidth: "150px", maxHeight: "60px" }}>
+          <Grid item xs={2} sx={{ maxWidth: "150px", maxHeight: "60px" }}>
             <BooleanInput source="pagado" />
+          </Grid>
+          <Grid item xs={2} sx={{ maxWidth: "150px", maxHeight: "60px" }}>
+            <LiquidacionComponent />
           </Grid>
         </Grid>
       </SimpleForm>

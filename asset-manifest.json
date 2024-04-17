@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/SolDeMendiolaza/static/css/main.f855e6bc.css",
-    "main.js": "/SolDeMendiolaza/static/js/main.931e8549.js",
+    "main.js": "/SolDeMendiolaza/static/js/main.18106e80.js",
     "static/js/198.9f6233f0.chunk.js": "/SolDeMendiolaza/static/js/198.9f6233f0.chunk.js",
     "index.html": "/SolDeMendiolaza/index.html",
     "main.f855e6bc.css.map": "/SolDeMendiolaza/static/css/main.f855e6bc.css.map",
-    "main.931e8549.js.map": "/SolDeMendiolaza/static/js/main.931e8549.js.map",
+    "main.18106e80.js.map": "/SolDeMendiolaza/static/js/main.18106e80.js.map",
     "198.9f6233f0.chunk.js.map": "/SolDeMendiolaza/static/js/198.9f6233f0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.931e8549.js"
+    "static/js/main.18106e80.js"
   ]
 }
